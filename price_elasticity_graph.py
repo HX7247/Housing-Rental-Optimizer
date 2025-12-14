@@ -252,3 +252,87 @@ fig3.suptitle('2018 Price Elasticity - Market Activity Analysis',
              fontsize=14, fontweight='bold')
 plt.tight_layout()
 plt.show()
+
+# ===== Plot 4: Average Rent Price vs Count of Renters =====
+# Create fourth figure
+fig4, ax4 = plt.subplots(figsize=(12, 8))
+# Interpret: Shows rental market size and pricing dynamics
+
+scatter4 = ax4.scatter(df['Average Monthly Rent (£)'], 
+                       df['Counts of Rents'],
+                       s=150, 
+                       c=df['Gross Yield (%)'],
+                       cmap='RdYlGn',
+                       alpha=0.7,
+                       edgecolors='black',
+                       linewidth=1)
+
+# Add trend line
+z4 = np.polyfit(df['Average Monthly Rent (£)'], df['Counts of Rents'], 1)
+p4 = np.poly1d(z4)
+ax4.plot(df['Average Monthly Rent (£)'], p4(df['Average Monthly Rent (£)']), 
+         "b--", alpha=0.5, linewidth=2, label='Trend Line')
+
+# Add quadrant lines
+median_rent_4 = df['Average Monthly Rent (£)'].median()
+median_renters_4 = df['Counts of Rents'].median()
+
+ax4.axvline(median_rent_4, color='gray', linestyle='--', alpha=0.5, linewidth=1)
+ax4.axhline(median_renters_4, color='gray', linestyle='--', alpha=0.5, linewidth=1)
+
+# Add quadrant labels
+ax4.text(df['Average Monthly Rent (£)'].min() * 1.0, 
+         df['Counts of Rents'].max() * 0.995,
+         'Low Rent &\nHigh Demand', 
+         fontsize=10, style='italic', alpha=0.6, ha='left', va='top',
+         bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.3))
+
+ax4.text(df['Average Monthly Rent (£)'].max() * 0.85, 
+         df['Counts of Rents'].max() * 0.95,
+         'High Rent &\nHigh Demand', 
+         fontsize=10, style='italic', alpha=0.6, ha='center',
+         bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.3))
+
+ax4.text(df['Average Monthly Rent (£)'].max() * 0.85, 
+         df['Counts of Rents'].min() * 1.5,
+         'High Rent &\nLow Demand', 
+         fontsize=10, style='italic', alpha=0.6, ha='center',
+         bbox=dict(boxstyle='round', facecolor='lightcoral', alpha=0.3))
+
+ax4.text(df['Average Monthly Rent (£)'].min() * 1.2, 
+         df['Counts of Rents'].min() * 1.5,
+         'Low Rent &\nLow Demand', 
+         fontsize=10, style='italic', alpha=0.6, ha='center')
+
+# Annotate key boroughs
+for idx, row in df.iterrows():
+    if row['Counts of Rents'] > 3500 or row['Average Monthly Rent (£)'] > 2800:
+        # Smart positioning based on location
+        if row['Average Monthly Rent (£)'] > 2800:  # High rent, move label left
+            xytext = (-80, -15)
+        elif row['Counts of Rents'] > 3500:  # High demand, move label down
+            xytext = (10, -20)
+        else:
+            xytext = (10, 10)
+        
+        ax4.annotate(row['Boroughs'], 
+                    (row['Average Monthly Rent (£)'], row['Counts of Rents']),
+                    fontsize=8, alpha=0.8, xytext=xytext, 
+                    textcoords='offset points',
+                    bbox=dict(boxstyle='round,pad=0.3', facecolor='white', edgecolor='gray', alpha=0.7),
+                    arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0', color='gray', lw=0.5))
+
+ax4.set_xlabel('Average Monthly Rent (£)', fontsize=12, fontweight='bold')
+ax4.set_ylabel('Count of Renters', fontsize=12, fontweight='bold')
+ax4.set_title('Rental Market Size vs Pricing\nAverage Rent vs Count of Renters', 
+              fontsize=13, fontweight='bold', pad=15)
+ax4.grid(True, alpha=0.3)
+ax4.legend(loc='upper left', fontsize=9)
+
+cbar4 = plt.colorbar(scatter4, ax=ax4)
+cbar4.set_label('Gross Yield (%)', fontsize=10, fontweight='bold')
+
+fig4.suptitle('2018 Price Elasticity - Rental Market Dynamics', 
+             fontsize=14, fontweight='bold')
+plt.tight_layout()
+plt.show()
