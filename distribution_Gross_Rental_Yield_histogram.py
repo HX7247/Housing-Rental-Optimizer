@@ -37,5 +37,5 @@ ax.legend(frameon=False)
 plt.tight_layout()
 
 # Save figure
-plt.savefig('Appendix_Figure_A1_Gross_Yield_Distribution.png', dpi=300)
+plt.savefig('Appendix_Figure_Gross_Yield_Distribution.png', dpi=300)
 plt.show()
